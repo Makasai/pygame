@@ -28,7 +28,7 @@ brown = pygame.Color(165,42,42) # food
 fpsController = pygame.time.Clock()
 
 snakePos = [100,50] # head of snake
-snakeBody = [[100,50], [90,50], [80,50]]
+snakeBody = [[100,50], [90,50], [80,50], [70,50],[60,50],[50,50],[40,50],[30,50],[20,50]]
 
 foodPos = [random.randrange(1,72)*10,random.randrange(1,46)*10]
 foodSpawn = True
@@ -51,6 +51,7 @@ def gameOver():
 # Main Logic of the game
 while 1:
     for event in pygame.event.get():
+        print(event)
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit(1)
@@ -66,41 +67,49 @@ while 1:
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.EVENT(QUIT))
 
-        # validation of direction
-        # you can't go left if you're going right - makes sense
-        if changeto == 'RIGHT' and not direction == 'LEFT':
-            direction == 'RIGHT'
-        if changeto == 'LEFT' and not direction == 'RIGHT':
-            direction == 'LEFT'
-        if changeto == 'UP' and not direction == 'DOWN':
-            direction == 'UP'
-        if changeto == 'DOWN' and not direction == 'UP':
-            direction == 'DOWN'
+    # validation of direction
+    # you can't go left if you're going right - makes sense
+    print("changeto: {0}".format(changeto))
+    print("direction: {0}".format(direction))
 
-        # update snake position [x,y]
-        if direction == 'RIGHT':
-            snakePos[0] += 10
-        if direction == 'LEFT':
-            snakePos[0] -= 10
-        if direction == 'UP':
-            snakePos[1] -= 10
-        if direction == 'DOWN':
-            snakePos[1] += 10
+    if changeto == 'RIGHT' and direction != 'LEFT':
+        direction = 'RIGHT'
+        print("ENTER RIGHT")
+    if changeto == 'LEFT' and direction != 'RIGHT':
+        direction = 'LEFT'
+        print("ENTER LEFT")
+    if changeto == 'UP' and direction != 'DOWN':
+        direction = 'UP'
+        print("ENTER UP")
+    if changeto == 'DOWN' and direction != 'UP':
+        direction = 'DOWN'
+        print("ENTER DOWN")
 
-        # Snake body mechanism
-        snakeBody.insert(0,list(snakePos))
-        if snakePos == foodPos:
-            foodSpawn = False
-        else:
-            snakeBody.pop()
+    # update snake position [x,y]
+    if direction == 'RIGHT':
+        snakePos[0] += 10
+    if direction == 'LEFT':
+        snakePos[0] -= 10
+    if direction == 'UP':
+        snakePos[1] -= 10
+    if direction == 'DOWN':
+        snakePos[1] += 10
+    # Snake body mechanism
+    snakeBody.insert(0,list(snakePos))
+    if snakePos == foodPos:
+        foodSpawn = False
+    else:
+        snakeBody.pop()
 
-        if foodSpawn == False:
-            foodPos = [random.randrange(1,72)*10,random.randrange(1,46)*10]
-        foodSpawn = True
+    if foodSpawn == False:
+        foodPos = [random.randrange(1,72)*10,random.randrange(1,46)*10]
+    foodSpawn = True
 
-        playSurface.fill(white)
-        for pos in snakeBody:
-            pygame.draw.rect(playSurface, green, pygame.Rect(pos[0],pos[1],10,10))
+    playSurface.fill(white)
+    for pos in snakeBody:
+        pygame.draw.rect(playSurface, green, pygame.Rect(pos[0],pos[1],10,10))
 
-        pygame.display.flip()
-        fpsController.tick(25)
+    pygame.draw.rect(playSurface, brown, pygame.Rect(foodPos[0],foodPos[1],10,10))
+
+    pygame.display.flip()
+    fpsController.tick(15)
