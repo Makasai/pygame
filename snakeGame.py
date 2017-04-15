@@ -27,7 +27,7 @@ brown = pygame.Color(165,42,42) # food
 # FPS controller
 fpsController = pygame.time.Clock()
 
-snakePos = [100,50]
+snakePos = [100,50] # head of snake
 snakeBody = [[100,50], [90,50], [80,50]]
 
 foodPos = [random.randrange(1,72)*10,random.randrange(1,46)*10]
@@ -55,13 +55,13 @@ while 1:
             pygame.quit()
             sys.exit(1)
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT or event.key == ord('d')
+            if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 changeto = 'RIGHT'
-            if event.key == pygame.K_LEFT or event.key == ord('a')
+            if event.key == pygame.K_LEFT or event.key == ord('a'):
                 changeto = 'LEFT'
-            if event.key == pygame.K_UP or event.key == ord('w')
+            if event.key == pygame.K_UP or event.key == ord('w'):
                 changeto = 'UP'
-            if event.key == pygame.K_DOWN or event.key == ord('s')
+            if event.key == pygame.K_DOWN or event.key == ord('s'):
                 changeto = 'DOWN'
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.EVENT(QUIT))
@@ -77,5 +77,30 @@ while 1:
         if changeto == 'DOWN' and not direction == 'UP':
             direction == 'DOWN'
 
+        # update snake position [x,y]
         if direction == 'RIGHT':
-            # [x,y]
+            snakePos[0] += 10
+        if direction == 'LEFT':
+            snakePos[0] -= 10
+        if direction == 'UP':
+            snakePos[1] -= 10
+        if direction == 'DOWN':
+            snakePos[1] += 10
+
+        # Snake body mechanism
+        snakeBody.insert(0,list(snakePos))
+        if snakePos == foodPos:
+            foodSpawn = False
+        else:
+            snakeBody.pop()
+
+        if foodSpawn == False:
+            foodPos = [random.randrange(1,72)*10,random.randrange(1,46)*10]
+        foodSpawn = True
+
+        playSurface.fill(white)
+        for pos in snakeBody:
+            pygame.draw.rect(playSurface, green, pygame.Rect(pos[0],pos[1],10,10))
+
+        pygame.display.flip()
+        fpsController.tick(25)
